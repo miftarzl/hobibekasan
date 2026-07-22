@@ -3,6 +3,8 @@
 if (!defined('CONFIG_INCLUDED')) {
     define('CONFIG_INCLUDED', true);
 
+    require_once __DIR__ . '/env.php';
+
     $host = getenv('DB_HOST') ?: "localhost";
     $db_user = getenv('DB_USER') ?: "root";
     $db_pass = getenv('DB_PASS') ?: "";

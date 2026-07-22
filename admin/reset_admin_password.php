@@ -6,6 +6,22 @@ $message = null;
 $message_type = null;
 $admin_reset_secret = getenv('ADMIN_RESET_SECRET');
 if ($admin_reset_secret === false || $admin_reset_secret === null || $admin_reset_secret === '') {
+    $envFile = dirname(__DIR__) . '/.env';
+    if (file_exists($envFile)) {
+        $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        foreach ($lines as $line) {
+            if (strpos(trim($line), '#') === 0 || strpos($line, '=') === false) {
+                continue;
+            }
+            list($key, $value) = explode('=', $line, 2);
+            if (trim($key) === 'ADMIN_RESET_SECRET') {
+                $admin_reset_secret = trim(trim($value), '"\'');
+                break;
+            }
+        }
+    }
+}
+if ($admin_reset_secret === false || $admin_reset_secret === null || $admin_reset_secret === '') {
     $admin_reset_secret = 'your_admin_reset_secret_here';
 }
 
