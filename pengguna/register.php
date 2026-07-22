@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $response_message = 'Email sudah terdaftar. Silakan gunakan email lain.';
     } else {
         // Simpan data ke database
-        $stmt = $conn->prepare("INSERT INTO users (username, email, password, phone_number, address, is_verified, role) VALUES (?, ?, ?, ?, ?, 1, 'user')");
+        $stmt = $conn->prepare("INSERT INTO users (username, email, password, phone_number, address, verification_token, is_verified, role) VALUES (?, ?, ?, ?, ?, '', 1, 'user')");
         $stmt->bind_param("sssss", $username, $email, $password, $phone_number, $address);
         if ($stmt->execute()) {
             // Kirim email verifikasi

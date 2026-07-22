@@ -6,10 +6,10 @@ echo "=== Adding Sample Data ===\n";
 try {
     // Sample Categories (hanya jika belum ada)
     $categories = [
-        ['Baju', 'Pakaian bekas berkualitas'],
-        ['Celana', 'Celana bekas kondisi baik'],
-        ['Sepatu', 'Sepatu bekas original'],
-        ['Aksesoris', 'Aksesoris fashion bekas']
+        ['Baju', 'Pakaian bekas berkualitas', 'jaket.png'],
+        ['Celana', 'Celana bekas kondisi baik', 'boots.png'],
+        ['Sepatu', 'Sepatu bekas original', 'sneakers_new.png'],
+        ['Aksesoris', 'Aksesoris fashion bekas', 'kidsboots.png']
     ];
     
     foreach ($categories as $cat) {
@@ -22,14 +22,14 @@ try {
     
     // Sample Products
     $products = [
-        ['Kemeja Flanel', 150000, 1, 'Kemeja flanel bekas impor', 'flanel.jpg', 15],
-        ['Jeans Levis', 200000, 2, 'Jeans original bekas', 'jeans.jpg', 10],
-        ['Sepatu Nike', 300000, 3, 'Sepatu Nike bekas 90%', 'nike.jpg', 5],
-        ['Tas Vintage', 100000, 4, 'Tas kulit vintage', 'tas.jpg', 8],
-        ['Jaket Kulit', 250000, 1, 'Jaket kulit asli', 'jaket.jpg', 6],
-        ['Kaos Polo', 80000, 1, 'Kaos polo original', 'polo.jpg', 20],
-        ['Sweater', 120000, 1, 'Sweater wool import', 'sweater.jpg', 12],
-        ['Topi', 50000, 4, 'Topi baseball vintage', 'topi.jpg', 25]
+        ['Nike Air Force 1', 150000, 3, 'Sepatu Nike Air Force 1 preloved', 'Nike Air Force 1.jpg', 15],
+        ['Nike Air Jordan 1 High OG', 200000, 3, 'Sepatu Nike Air Jordan 1 High OG preloved', 'Nike Air Jordan 1 High OG.jpeg', 10],
+        ['Nike Air Jordan 1 Low OG', 300000, 3, 'Sepatu Nike Air Jordan 1 Low OG preloved', 'Nike Air Jordan 1 Low OG.jpg', 5],
+        ['Vans Old Skool', 100000, 4, 'Sepatu Vans Old Skool preloved', 'Vans Old Skool.jpeg', 8],
+        ['Hoodie NBA', 250000, 1, 'Hoodie NBA vintage', 'Hoodie NBA.jpeg', 6],
+        ['Hoodie Supreme', 80000, 1, 'Hoodie Supreme preloved', 'Hoodie Supreme.jpeg', 20],
+        ['Hoodie Cosmic', 120000, 1, 'Hoodie Cosmic limited edition', 'Hoodie Cosmic.jpeg', 12],
+        ['Nike Air Jordan 1 Mid', 50000, 3, 'Sepatu Nike Air Jordan 1 Mid preloved', 'Nike Air Jordan 1 Mid.jpg', 25]
     ];
     
     foreach ($products as $product) {
