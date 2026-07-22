@@ -25,7 +25,7 @@ services:
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: hobibekasan
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - db_data:/var/lib/mysql
       - ./hobibekasan.sql:/docker-entrypoint-initdb.d/hobibekasan.sql:ro
