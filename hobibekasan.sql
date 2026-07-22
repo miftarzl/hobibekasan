@@ -228,7 +228,7 @@ CREATE TABLE `ai_description_cache` (
     `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
     UNIQUE KEY `product_id` (`product_id`),
-    KEY `ai_description` (`ai_description`),
+    KEY `ai_description` (`ai_description`(191)),
     CONSTRAINT `ai_description_cache_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
