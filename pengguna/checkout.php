@@ -1398,9 +1398,15 @@ document.addEventListener('DOMContentLoaded', function() {
                                 showPaymentPopup('pending', data.order_number, data.amount);
                             },
                             onError: function(result) {
-                                showPaymentPopup('error', data.order_number, data.amount);
-                                submitBtn.innerHTML = '<i class="fas fa-receipt"></i> Proses Pembayaran';
-                                submitBtn.disabled = false;
+                                fetch('../api/cancel_order.php', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ order_number: data.order_number, status: 'cancelled' })
+                                }).finally(() => {
+                                    showPaymentPopup('error', data.order_number, data.amount);
+                                    submitBtn.innerHTML = '<i class="fas fa-receipt"></i> Proses Pembayaran';
+                                    submitBtn.disabled = false;
+                                });
                             }
                         });
                     } else {
