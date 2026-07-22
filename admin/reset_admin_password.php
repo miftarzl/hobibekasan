@@ -4,21 +4,27 @@ require '../config/config.php';
 
 $message = null;
 $message_type = null;
-
-// Batasi penggunaan hanya dari localhost (untuk keamanan reset darurat)
-$allowed_hosts = ['127.0.0.1', '::1', 'localhost'];
-$remote_addr = $_SERVER['REMOTE_ADDR'] ?? '';
-$server_name = $_SERVER['SERVER_NAME'] ?? '';
-
-if (!in_array($remote_addr, $allowed_hosts, true) && !in_array($server_name, $allowed_hosts, true)) {
-    http_response_code(403);
-    die('Akses ditolak.');
-}
+$admin_reset_secret = getenv('ADMIN_RESET_SECRET') ?: 'admin_reset_default_secret';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $secret = trim($_POST['secret'] ?? '');
     $username = trim($_POST['username'] ?? '');
     $new_password = $_POST['new_password'] ?? '';
     $confirm_password = $_POST['confirm_password'] ?? '';
+
+    if ($secret === '' || $secret !== $admin_reset_secret) {
+        $message = 'Secret reset admin tidak valid. Periksa kembali token reset Anda.';
+        $message_type = 'danger';
+    } elseif ($username === '' || $new_password === '' || $confirm_password === '') {
+        $message = 'Semua field wajib diisi.';
+        $message_type = 'danger';
+    } elseif ($new_password !== $confirm_password) {
+        $message = 'Konfirmasi password tidak cocok.';
+        $message_type = 'danger';
+    } elseif (strlen($new_password) < 6) {
+        $message = 'Password minimal 6 karakter.';
+        $message_type = 'danger';
+    } else {
 
     if ($username === '' || $new_password === '' || $confirm_password === '') {
         $message = 'Semua field wajib diisi.';
@@ -85,6 +91,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                         <form method="POST">
                             <div class="mb-3">
+                                <label class="form-label">Admin Reset Secret</label>
+                                <input type="password" name="secret" class="form-control" required>
+                                <div class="form-text">Masukkan token reset yang ada di .env (ADMIN_RESET_SECRET).</div>
+                            </div>
+                        <div class="mb-3">
                                 <label class="form-label">Username Admin</label>
                                 <input type="text" name="username" class="form-control" required>
                             </div>
