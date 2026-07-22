@@ -121,12 +121,12 @@ function displayRecommendationCard($recommendation) {
         <div class="position-relative overflow-hidden">
             ' . $badge . '
             <div class="product-image-container" style="background: #f8f9fa; min-height: 150px; display: flex; align-items: center; justify-content: center; cursor: pointer;"
-                 onclick="openImageModal(\'http://localhost/hobibekasan/assets/img/products/' . htmlspecialchars($product['image'] ?? 'foto1.jpg') . '\', \'' . htmlspecialchars($product['name']) . '\')">
-                <img src="http://localhost/hobibekasan/assets/img/products/' . htmlspecialchars($product['image'] ?? 'foto1.jpg') . '" 
+                 onclick="openImageModal(\'/assets/img/products/' . htmlspecialchars($product['image'] ?? 'foto1.jpg') . '\', \'" . htmlspecialchars($product['name']) . "\')">
+                <img src="/assets/img/products/' . htmlspecialchars($product['image'] ?? 'foto1.jpg') . '" 
                      class="card-img-top product-image" 
                      alt="' . htmlspecialchars($product['name']) . '"
                      style="max-width: 100%; max-height: 150px; object-fit: contain; border: 2px solid #007bff; border-radius: 8px; transition: transform 0.3s ease;"
-                     onerror="this.src=\'http://localhost/hobibekasan/assets/img/logo.jpg\'; console.log(\'Image failed to load, using placeholder\');">
+                     onerror="this.src=\'/assets/img/logo.jpg\'; console.log(\'Image failed to load, using placeholder\');">
             </div>
         </div>
         <div class="card-body">

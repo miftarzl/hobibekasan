@@ -157,7 +157,7 @@ function sendOrderConfirmationEmail($user_email, $user_name, $order_number, $car
                 </div>
                 
                 <div style='text-align: center;'>
-                    <a href='http://localhost/hobibekasan/pengguna/struk_pembelian.php?order_id=" . $order_number . "' class='btn'>📄 Lihat Struk Pembelian</a>
+                    <a href='" . BASE_URL . "/pengguna/struk_pembelian.php?order_id=" . $order_number . "' class='btn'>📄 Lihat Struk Pembelian</a>
                 </div>
             </div>
             

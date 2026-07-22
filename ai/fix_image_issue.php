@@ -31,7 +31,7 @@ if (isset($_SESSION['user']['user_id'])) {
         // Test all possible paths
         $paths = [
             '../assets/img/products/' . ($product['image'] ?? 'placeholder.jpg'),
-            '/hobibekasan/assets/img/products/' . ($product['image'] ?? 'placeholder.jpg'),
+            '/assets/img/products/' . ($product['image'] ?? 'placeholder.jpg'),
             'assets/img/products/' . ($product['image'] ?? 'placeholder.jpg'),
             './assets/img/products/' . ($product['image'] ?? 'placeholder.jpg')
         ];
@@ -47,16 +47,16 @@ if (isset($_SESSION['user']['user_id'])) {
         
         // Force display with absolute path
         echo "<h3>Forced Display:</h3>";
-        $absolutePath = $_SERVER['DOCUMENT_ROOT'] . '/hobibekasan/assets/img/products/' . ($product['image'] ?? 'placeholder.jpg');
+        $absolutePath = $_SERVER['DOCUMENT_ROOT'] . '/assets/img/products/' . ($product['image'] ?? 'placeholder.jpg');
         echo "Absolute path: $absolutePath<br>";
-        echo "URL path: /hobibekasan/assets/img/products/" . ($product['image'] ?? 'placeholder.jpg') . "<br>";
+        echo "URL path: /assets/img/products/" . ($product['image'] ?? 'placeholder.jpg') . "<br>";
         
         // Create simple HTML display
         echo "<h3>Simple Card Display:</h3>";
         ?>
         <div style="border: 2px solid #ccc; padding: 20px; margin: 20px 0; max-width: 400px;">
             <div style="text-align: center; margin-bottom: 15px;">
-                <img src="/hobibekasan/assets/img/products/<?php echo $product['image'] ?? 'placeholder.jpg'; ?>" 
+                <img src="/assets/img/products/<?php echo $product['image'] ?? 'placeholder.jpg'; ?>" 
                      style="max-width: 200px; max-height: 200px; border: 1px solid #ddd;" 
                      alt="<?php echo htmlspecialchars($product['name']); ?>">
             </div>

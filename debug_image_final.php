@@ -33,10 +33,10 @@ if (isset($_SESSION['user']) && isset($_SESSION['user']['user_id'])) {
         echo "<h3>Image Path Testing:</h3>";
         
         $paths = [
-            'Full URL' => "http://localhost/hobibekasan/assets/img/products/$imageFile",
+            'Full URL' => "http://localhost/assets/img/products/$imageFile",
             'Relative' => "../assets/img/products/$imageFile",
-            'Absolute' => "/hobibekasan/assets/img/products/$imageFile",
-            'Document Root' => $_SERVER['DOCUMENT_ROOT'] . "/hobibekasan/assets/img/products/$imageFile"
+            'Absolute' => "/assets/img/products/$imageFile",
+            'Document Root' => $_SERVER['DOCUMENT_ROOT'] . "/assets/img/products/$imageFile"
         ];
         
         foreach ($paths as $type => $path) {

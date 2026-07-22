@@ -15,7 +15,19 @@ if (!defined('CONFIG_INCLUDED')) {
     }
 
     if (!defined('BASE_URL')) {
-        define('BASE_URL', getenv('BASE_URL') ?: 'http://localhost/hobibekasan');
+        $baseUrl = getenv('BASE_URL');
+        if (!$baseUrl) {
+            if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
+                $scheme = 'https';
+            } elseif (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443) {
+                $scheme = 'https';
+            } else {
+                $scheme = 'http';
+            }
+            $host = $_SERVER['HTTP_HOST'] ?? 'localhost:8087';
+            $baseUrl = $scheme . '://' . $host;
+        }
+        define('BASE_URL', rtrim($baseUrl, '/'));
     }
 
     if (!defined('SITE_NAME')) {

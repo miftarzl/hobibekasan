@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         // In a real application, you would send an email with the reset link
         // For demo purposes, we'll show the reset link on screen
-        $reset_link = "http://$_SERVER[HTTP_HOST]/hobibekasan/pengguna/reset_password.php?token=$token";
+        $reset_link = BASE_URL . '/pengguna/reset_password.php?token=' . $token;
         
         $_SESSION['success'] = "Link reset password telah dikirim ke email Anda. Untuk demo: <a href='$reset_link'>$reset_link</a>";
         header("Location: lupa_password.php");

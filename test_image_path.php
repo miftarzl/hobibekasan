@@ -27,7 +27,7 @@ if (isset($_SESSION['user']) && isset($_SESSION['user']['user_id'])) {
         
         $imagePaths = [
             '../assets/img/products/' . ($product['image'] ?? 'placeholder.jpg'),
-            '/hobibekasan/assets/img/products/' . ($product['image'] ?? 'placeholder.jpg'),
+            '/assets/img/products/' . ($product['image'] ?? 'placeholder.jpg'),
             'assets/img/products/' . ($product['image'] ?? 'placeholder.jpg'),
             './assets/img/products/' . ($product['image'] ?? 'placeholder.jpg'),
             'img/products/' . ($product['image'] ?? 'placeholder.jpg')
