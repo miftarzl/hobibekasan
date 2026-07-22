@@ -20,11 +20,14 @@ if (isset($_POST['update_product'])) {
     $sizes = isset($_POST['sizes']) ? implode(',', $_POST['sizes']) : '';
     
     // Handle image upload if new image is provided
-    if ($_FILES['image']['name']) {
+    if (isset($_FILES['image']) && !empty($_FILES['image']['name'])) {
         $image = $_FILES['image']['name'];
         $target_dir = "../assets/img/products/";
+        if (!is_dir($target_dir)) {
+            @mkdir($target_dir, 0777, true);
+        }
         $target_file = $target_dir . basename($image);
-        move_uploaded_file($_FILES["image"]["tmp_name"], $target_file);
+        @move_uploaded_file($_FILES["image"]["tmp_name"], $target_file);
         
         $query = "UPDATE products SET name='$name', description='$description', price='$price', 
                   category_id='$category_id', image='$image', sizes='$sizes' 

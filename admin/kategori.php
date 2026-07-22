@@ -13,13 +13,16 @@ require '../config/config.php';
 // Handle adding a category
 if (isset($_POST['add_category'])) {
     $category_name = htmlspecialchars($_POST['category_name']);
-    $category_photo = $_FILES['category_photo']['name'];
+    $category_photo = isset($_FILES['category_photo']) ? $_FILES['category_photo']['name'] : '';
     
     // Upload category photo
     if ($category_photo) {
         $target_dir = "../assets/img/category/";
+        if (!is_dir($target_dir)) {
+            @mkdir($target_dir, 0777, true);
+        }
         $target_file = $target_dir . basename($category_photo);
-        move_uploaded_file($_FILES["category_photo"]["tmp_name"], $target_file);
+        @move_uploaded_file($_FILES["category_photo"]["tmp_name"], $target_file);
     }
     
     // Insert dengan semua field yang diperlukan
@@ -42,13 +45,16 @@ if (isset($_GET['delete'])) {
 if (isset($_POST['update_category'])) {
     $id = $_POST['category_id'];
     $category_name = htmlspecialchars($_POST['category_name']);
-    $category_photo = $_FILES['category_photo']['name'];
+    $category_photo = isset($_FILES['category_photo']) ? $_FILES['category_photo']['name'] : '';
     
     // Upload new category photo if provided
     if ($category_photo) {
         $target_dir = "../assets/img/category/";
+        if (!is_dir($target_dir)) {
+            @mkdir($target_dir, 0777, true);
+        }
         $target_file = $target_dir . basename($category_photo);
-        move_uploaded_file($_FILES["category_photo"]["tmp_name"], $target_file);
+        @move_uploaded_file($_FILES["category_photo"]["tmp_name"], $target_file);
         
         $query = "UPDATE categories SET name = '$category_name', category_name = '$category_name', category_photo = '$category_photo' WHERE category_id = $id";
     } else {

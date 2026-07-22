@@ -20,11 +20,14 @@ if (isset($_POST['add_product'])) {
     $sizes = isset($_POST['sizes']) ? implode(',', $_POST['sizes']) : '';
     $image = $_FILES['image']['name'];
     
-    // Upload imageww
+    // Upload image
     if ($image) {
         $target_dir = "../assets/img/products/";
+        if (!is_dir($target_dir)) {
+            @mkdir($target_dir, 0777, true);
+        }
         $target_file = $target_dir . basename($image);
-        move_uploaded_file($_FILES["image"]["tmp_name"], $target_file);
+        @move_uploaded_file($_FILES["image"]["tmp_name"], $target_file);
     }
     
     // Query dengan prepared statement untuk mencegah SQL injection
@@ -100,11 +103,14 @@ if (isset($_POST['edit_product'])) {
     $sizes = isset($_POST['sizes']) ? implode(',', $_POST['sizes']) : '';
     
     // Handle image upload if new image is provided
-    if ($_FILES['edit_image']['name']) {
+    if (isset($_FILES['edit_image']) && !empty($_FILES['edit_image']['name'])) {
         $image = $_FILES['edit_image']['name'];
         $target_dir = "../assets/img/products/";
+        if (!is_dir($target_dir)) {
+            @mkdir($target_dir, 0777, true);
+        }
         $target_file = $target_dir . basename($image);
-        move_uploaded_file($_FILES["edit_image"]["tmp_name"], $target_file);
+        @move_uploaded_file($_FILES["edit_image"]["tmp_name"], $target_file);
         
         $query = "UPDATE products SET name=?, description=?, price=?, category_id=?, image=?, sizes=? WHERE product_id=?";
         $stmt = $conn->prepare($query);
@@ -112,7 +118,7 @@ if (isset($_POST['edit_product'])) {
     } else {
         $query = "UPDATE products SET name=?, description=?, price=?, category_id=?, sizes=? WHERE product_id=?";
         $stmt = $conn->prepare($query);
-        $stmt->bind_param("ssdissi", $name, $description, $price, $category_id, $sizes, $product_id);
+        $stmt->bind_param("ssdisi", $name, $description, $price, $category_id, $sizes, $product_id);
     }
     
     $stmt->execute();

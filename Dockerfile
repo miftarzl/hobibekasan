@@ -17,4 +17,4 @@ COPY . /var/www/html
 RUN chown -R www-data:www-data /var/www/html
 WORKDIR /var/www/html
 EXPOSE 80
-CMD ["apache2-foreground"]
+CMD ["sh", "-c", "mkdir -p /var/www/html/assets/img/products /var/www/html/assets/img/category /var/www/html/assets/img/profiles /var/www/html/assets/uploads && chmod -R 777 /var/www/html/assets && apache2-foreground"]
