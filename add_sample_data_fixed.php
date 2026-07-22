@@ -54,7 +54,7 @@ try {
     
     foreach ($transactions as $trans) {
         $user_id = rand(1, 2); // Random user ID
-        $conn->query("INSERT INTO transactions (user_id, customer_name, total_price, status, payment_method, created_at) VALUES ($user_id, '" . $trans[0] . "', " . $trans[1] . ", '" . $trans[2] . "', '" . $trans[3] . "', NOW())");
+        $conn->query("INSERT INTO transactions (user_id, total_price, status, payment_method, created_at) VALUES ($user_id, " . $trans[1] . ", '" . $trans[2] . "', '" . $trans[3] . "', NOW())");
         echo "✅ Added transaction: " . $trans[0] . " - Rp " . number_format($trans[1]) . " (" . $trans[2] . ")\n";
     }
     
