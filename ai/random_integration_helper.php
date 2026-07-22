@@ -116,50 +116,50 @@ function displayRecommendationCard($recommendation) {
         $stockBadge = 'bg-danger';
     }
     
-    return '
+    $image = htmlspecialchars($product['image'] ?? 'foto1.jpg');
+    $titleEsc = addslashes(htmlspecialchars($product['name'] ?? ''));
+    $priceFmt = number_format($product['price'], 0, ',', '.');
+    $categoryEsc = htmlspecialchars($product['category_name'] ?? 'Unknown');
+    $prodId = $product['product_id'];
+    $stock = $product['stock'];
+
+    return <<<HTML
     <div class="card recommendation-card shadow-sm animate__animated animate__fadeInUp">
         <div class="position-relative overflow-hidden">
-            ' . $badge . '
-            <div class="product-image-container" style="background: #f8f9fa; min-height: 150px; display: flex; align-items: center; justify-content: center; cursor: pointer;"
-                 onclick="openImageModal(\'/assets/img/products/' . htmlspecialchars($product['image'] ?? 'foto1.jpg') . '\', \'" . htmlspecialchars($product['name']) . "\')">
-                <img src="/assets/img/products/' . htmlspecialchars($product['image'] ?? 'foto1.jpg') . '" 
-                     class="card-img-top product-image" 
-                     alt="' . htmlspecialchars($product['name']) . '"
-                     style="max-width: 100%; max-height: 150px; object-fit: contain; border: 2px solid #007bff; border-radius: 8px; transition: transform 0.3s ease;"
-                     onerror="this.src=\'/assets/img/logo.jpg\'; console.log(\'Image failed to load, using placeholder\');">
+            {$badge}
+            <div class="product-image-container" style="background: #f8f9fa; min-height: 150px; display: flex; align-items: center; justify-content: center; cursor: pointer;" onclick="openImageModal('/assets/img/products/{$image}', '{$titleEsc}')">
+                <img src="/assets/img/products/{$image}" class="card-img-top product-image" alt="{$titleEsc}" style="max-width: 100%; max-height: 150px; object-fit: contain; border: 2px solid #007bff; border-radius: 8px; transition: transform 0.3s ease;" onerror="this.src='/assets/img/logo.jpg'; console.log('Image failed to load, using placeholder');">
             </div>
         </div>
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-2">
-                <h5 class="card-title text-truncate">' . htmlspecialchars($product['name']) . '</h5>
-                <span class="badge ' . $stockBadge . ' text-white">' . $stockStatus . '</span>
+                <h5 class="card-title text-truncate">{$titleEsc}</h5>
+                <span class="badge {$stockBadge} text-white">{$stockStatus}</span>
             </div>
-            <p class="card-text text-primary fw-bold mb-2">Rp ' . number_format($product['price'], 0, ',', '.') . '</p>
+            <p class="card-text text-primary fw-bold mb-2">Rp {$priceFmt}</p>
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <small class="text-muted">
                     <i class="fas fa-tag me-1"></i>
-                    ' . htmlspecialchars($product['category_name'] ?? 'Unknown') . '
+                    {$categoryEsc}
                 </small>
                 <small class="text-muted">
                     <i class="fas fa-cube me-1"></i>
-                    Stok: ' . $product['stock'] . '
+                    Stok: {$stock}
                 </small>
             </div>
             <div class="d-grid gap-2">
-                <a href="produk_detail.php?id=' . $product['product_id'] . '" 
-                   class="btn btn-primary btn-sm">
+                <a href="produk_detail.php?id={$prodId}" class="btn btn-primary btn-sm">
                     <i class="fas fa-eye me-1"></i>
                     Lihat Detail
                 </a>
-                <button class="btn btn-outline-primary btn-sm add-to-cart-btn" 
-                        data-product-id="' . $product['product_id'] . '">
+                <button class="btn btn-outline-primary btn-sm add-to-cart-btn" data-product-id="{$prodId}">
                     <i class="fas fa-shopping-cart me-1"></i>
                     + Keranjang
                 </button>
             </div>
         </div>
     </div>
-    
+
     <!-- Modal untuk popup gambar -->
     <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-sm modal-dialog-centered">
@@ -177,14 +177,15 @@ function displayRecommendationCard($recommendation) {
             </div>
         </div>
     </div>
-    
+
     <script>
     function openImageModal(imageSrc, title) {
-        document.getElementById(\'modalImage\').src = imageSrc;
-        document.getElementById(\'modalTitle\').textContent = title;
-        new bootstrap.Modal(document.getElementById(\'imageModal\')).show();
+        document.getElementById('modalImage').src = imageSrc;
+        document.getElementById('modalTitle').textContent = title;
+        new bootstrap.Modal(document.getElementById('imageModal')).show();
     }
-    </script>';
+    </script>
+HTML;
 }
 
 // Log AI analytics
