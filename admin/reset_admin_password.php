@@ -4,7 +4,10 @@ require '../config/config.php';
 
 $message = null;
 $message_type = null;
-$admin_reset_secret = getenv('ADMIN_RESET_SECRET') ?: 'admin_reset_default_secret';
+$admin_reset_secret = getenv('ADMIN_RESET_SECRET');
+if ($admin_reset_secret === false || $admin_reset_secret === null || $admin_reset_secret === '') {
+    $admin_reset_secret = 'your_admin_reset_secret_here';
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $secret = trim($_POST['secret'] ?? '');
