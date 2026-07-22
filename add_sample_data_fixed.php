@@ -39,7 +39,22 @@ try {
             echo "✅ Added product: " . $product[0] . " (Rp " . number_format($product[1]) . ")\n";
         }
     }
-    
+
+    // Sample Users (needed for foreign key on transactions)
+    $users = [
+        ['user1', 'user1@example.com', 'password123'],
+        ['user2', 'user2@example.com', 'password123']
+    ];
+
+    foreach ($users as $user) {
+        $check = $conn->query("SELECT COUNT(*) as count FROM users WHERE username = '" . $user[0] . "'");
+        if ($check->fetch_assoc()['count'] == 0) {
+            $hashed = password_hash($user[2], PASSWORD_BCRYPT);
+            $conn->query("INSERT INTO users (username, email, password, verification_token, is_verified, role) VALUES ('" . $user[0] . "', '" . $user[1] . "', '" . $hashed . "', '', 1, 'user')");
+            echo "✅ Added user: " . $user[0] . "\n";
+        }
+    }
+
     // Sample Transactions
     $transactions = [
         ['Budi Santoso', 450000, 'completed', 'transfer'],
