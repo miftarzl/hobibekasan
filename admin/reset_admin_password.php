@@ -25,17 +25,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $message = 'Password minimal 6 karakter.';
         $message_type = 'danger';
     } else {
-
-    if ($username === '' || $new_password === '' || $confirm_password === '') {
-        $message = 'Semua field wajib diisi.';
-        $message_type = 'danger';
-    } elseif ($new_password !== $confirm_password) {
-        $message = 'Konfirmasi password tidak cocok.';
-        $message_type = 'danger';
-    } elseif (strlen($new_password) < 6) {
-        $message = 'Password minimal 6 karakter.';
-        $message_type = 'danger';
-    } else {
         $check_stmt = $conn->prepare("SELECT id FROM users WHERE username = ? AND role = 'admin' LIMIT 1");
         $check_stmt->bind_param("s", $username);
         $check_stmt->execute();
