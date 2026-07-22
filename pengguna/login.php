@@ -49,9 +49,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmt = $conn->prepare("SELECT id, username, email, password, is_verified, role FROM users WHERE (username = ? OR email = ?) AND role = 'admin' LIMIT 1");
             $stmt->bind_param("ss", $identifier, $identifier);
         } else {
-            // Pengguna login wajib menggunakan email
-            $stmt = $conn->prepare("SELECT id, username, email, password, is_verified, role FROM users WHERE email = ? AND role <> 'admin' LIMIT 1");
-            $stmt->bind_param("s", $identifier);
+            // Pengguna login menggunakan email atau username
+            $stmt = $conn->prepare("SELECT id, username, email, password, is_verified, role FROM users WHERE (email = ? OR username = ?) AND role <> 'admin' LIMIT 1");
+            $stmt->bind_param("ss", $identifier, $identifier);
         }
 
         $stmt->execute();
