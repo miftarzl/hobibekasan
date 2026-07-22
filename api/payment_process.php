@@ -18,6 +18,9 @@ require_once '../config/env.php';
 require_once '../includes/MidtransPayment.php';
 
 try {
+    // Start DB transaction
+    $conn->begin_transaction();
+
     // Get POST data
     $input = json_decode(file_get_contents('php://input'), true);
     
@@ -162,7 +165,7 @@ try {
             ]
         ];
         
-        // Create Snap token
+        // Create Snap token (if fails, throws exception and triggers rollback below)
         $orderData = [
             'order_id' => $order_number,
             'amount' => $final_amount,
@@ -172,6 +175,9 @@ try {
         
         $snapToken = $midtrans->createSnapToken($orderData);
         
+        // Commit transaction if Snap token generated successfully
+        $conn->commit();
+
         echo json_encode([
             'success' => true,
             'order_id' => $order_id,
@@ -183,6 +189,8 @@ try {
         ]);
     } else {
         // For other payment methods (COD, etc.)
+        $conn->commit();
+
         echo json_encode([
             'success' => true,
             'order_id' => $order_id,
@@ -193,6 +201,10 @@ try {
     }
     
 } catch (Exception $e) {
+    if (isset($conn) && $conn->ping()) {
+        $conn->rollback();
+    }
+
     echo json_encode([
         'success' => false,
         'message' => $e->getMessage()

@@ -30,13 +30,17 @@ class MidtransPayment {
      * Get the appropriate API URL based on environment
      */
     private function getApiUrl() {
-        return $this->isProduction ? $this->productionUrl : $this->sandboxUrl;
+        return $this->isProduction ? 'https://app.midtrans.com' : 'https://app.sandbox.midtrans.com';
     }
     
     /**
      * Create Snap token for payment
      */
     public function createSnapToken($orderData) {
+        if (empty($this->serverKey) || strpos($this->serverKey, 'your_') === 0) {
+            throw new Exception("MIDTRANS_SERVER_KEY belum diisi dengan Key asli dari Dashboard Midtrans. Silakan perbarui file .env Anda.");
+        }
+
         $orderId = $orderData['order_id'];
         $grossAmount = $orderData['amount'];
         $customerDetails = $orderData['customer_details'];
@@ -101,6 +105,10 @@ class MidtransPayment {
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
         
+        if ($httpCode === 401) {
+            throw new Exception("Midtrans 401 Unauthorized: Server Key di file .env ('{$this->serverKey}') tidak valid atau tidak sesuai dengan mode environment ('{$this->environment}'). Periksa Server Key di dashboard.midtrans.com.");
+        }
+
         if ($httpCode !== 201) {
             throw new Exception("Failed to create Snap token. HTTP Code: $httpCode, Response: $response");
         }
