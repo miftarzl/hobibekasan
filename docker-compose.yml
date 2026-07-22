@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8087:80"
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_USER: root
+      DB_PASS: rootpassword
+      DB_DATABASE: hobibekasan
+      BASE_URL: http://localhost:8087
+      MIDTRANS_NOTIFICATION_URL: http://localhost:8087/api/payment_notification.php
+      MIDTRANS_REDIRECT_URL: http://localhost:8087/pengguna/riwayat_pesanan.php
+    volumes:
+      - .:/var/www/html:cached
+    restart: unless-stopped
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: hobibekasan
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./hobibekasan.sql:/docker-entrypoint-initdb.d/hobibekasan.sql:ro
+    restart: unless-stopped
+
+volumes:
+  db_data:

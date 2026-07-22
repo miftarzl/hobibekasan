@@ -1,0 +1,20 @@
+=== INFORMASI LOGIN ADMIN ===
+
+Untuk melihat username dan password admin yang tersedia:
+
+1. Buka browser dan akses: http://localhost/hobibekasan/admin_login_info.php
+2. Atau jalankan query SQL langsung ke database:
+   SELECT username, email, password FROM users WHERE role = 'admin';
+
+3. Password yang tersimpan di database adalah HASHED format
+   Gunakan password_verify() untuk verifikasi
+
+4. Default admin account (jika ada):
+   Username: admin
+   Password: admin123
+
+5. Jika tidak ada akun admin, buat dengan query:
+   INSERT INTO users (username, email, password, role, created_at) 
+   VALUES ('admin', 'admin@hobibekasan.com', '$2y$10$abcdefghijklmnopqrstuv', 'admin', NOW());
+
+Catatan: Password di atas adalah hash dari 'admin123' menggunakan password_hash()
