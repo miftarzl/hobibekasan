@@ -8,8 +8,8 @@ session_start(); // Mulai session
     }
 
     // Database connection
-    include '../config/config.php';
-    include '../config/env.php';
+    require_once '../config/config.php';
+    require_once '../config/env.php';
 
     // Handle AJAX request untuk update quantity
     if (isset($_POST['action']) && $_POST['action'] === 'update_quantity') {
