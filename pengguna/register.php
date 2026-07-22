@@ -73,8 +73,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $status = 'success';
                 $response_message = 'Pendaftaran berhasil! Silakan cek email Anda.';
             } catch (Exception $e) {
-                $status = 'error';
-                $response_message = "Pendaftaran gagal! Error: {$mail->ErrorInfo}";
+                error_log('Register email failed: ' . $mail->ErrorInfo);
+                $status = 'success';
+                $response_message = 'Pendaftaran berhasil! Namun email konfirmasi gagal dikirim. Silakan login langsung.';
             }
         } else {
             $status = 'error';

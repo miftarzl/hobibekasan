@@ -6,13 +6,11 @@ $error = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+        $identifier = trim($_POST['username']);
+        $password = $_POST['password'];
 
-    $stmt = $conn->prepare("SELECT id, username, password, role FROM users WHERE username=? AND role='admin'");
-    $stmt->bind_param("s", $username);
-    $stmt->execute();
-    $stmt->store_result();
+        $stmt = $conn->prepare("SELECT id, username, password, role FROM users WHERE (username = ? OR email = ?) AND role = 'admin' LIMIT 1");
+        $stmt->bind_param("ss", $identifier, $identifier);
 
     if ($stmt->num_rows > 0) {
 

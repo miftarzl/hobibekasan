@@ -45,9 +45,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $error_message = "Mohon lengkapi data login.";
     } else {
         if ($login_type === 'admin') {
-            // Admin login menggunakan username (tanpa email)
-            $stmt = $conn->prepare("SELECT id, username, email, password, is_verified, role FROM users WHERE username = ? AND role = 'admin' LIMIT 1");
-            $stmt->bind_param("s", $identifier);
+            // Admin login menggunakan username atau email
+            $stmt = $conn->prepare("SELECT id, username, email, password, is_verified, role FROM users WHERE (username = ? OR email = ?) AND role = 'admin' LIMIT 1");
+            $stmt->bind_param("ss", $identifier, $identifier);
         } else {
             // Pengguna login wajib menggunakan email
             $stmt = $conn->prepare("SELECT id, username, email, password, is_verified, role FROM users WHERE email = ? AND role <> 'admin' LIMIT 1");
