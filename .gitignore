@@ -1,4 +1,9 @@
 .env
 vendor/
+!vendor/autoload.php
+!vendor/vendor_autoload.php
+!vendor/integration_helper.php
+!vendor/phpmailer/
 node_modules/
 .DS_Store
+
