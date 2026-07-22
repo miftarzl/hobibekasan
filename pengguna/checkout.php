@@ -1,5 +1,5 @@
-    <?php
-    session_start(); // Mulai session
+<?php
+session_start(); // Mulai session
 
     // Cek apakah user login atau belum
     if (!isset($_SESSION['user']['user_id'])) {

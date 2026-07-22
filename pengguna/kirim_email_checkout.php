@@ -1,4 +1,4 @@
-e<?php
+<?php
 session_start();
 
 // Cek apakah user login atau belum
