@@ -30,9 +30,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $target_dir = "uploads/";
         
         // Buat direktori jika belum ada
-        if (!file_exists($target_dir)) {
-            mkdir($target_dir, 0777, true);
+        if (!is_dir($target_dir)) {
+            @mkdir($target_dir, 0777, true);
         }
+        @chmod($target_dir, 0777);
         
         $file_extension = strtolower(pathinfo($_FILES['review_photo']['name'], PATHINFO_EXTENSION));
         $new_filename = "review_" . $user_id . "_" . $product_id . "_" . time() . "." . $file_extension;
@@ -52,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         
         // Upload file
-        else if (move_uploaded_file($_FILES['review_photo']['tmp_name'], $target_file)) {
+        else if (@move_uploaded_file($_FILES['review_photo']['tmp_name'], $target_file)) {
             $review_photo = $new_filename;
         } else {
             $_SESSION['error'] = "Gagal mengupload foto ulasan.";

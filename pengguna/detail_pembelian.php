@@ -62,9 +62,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["payment_proof"]) && $
     $target_dir = "../uploads/payments/";
     
     // Buat direktori jika belum ada
-    if (!file_exists($target_dir)) {
-        mkdir($target_dir, 0777, true);
+    if (!is_dir($target_dir)) {
+        @mkdir($target_dir, 0777, true);
     }
+    @chmod($target_dir, 0777);
     
     // Dapatkan ekstensi file
     $imageFileType = strtolower(pathinfo($_FILES["payment_proof"]["name"], PATHINFO_EXTENSION));
@@ -87,7 +88,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["payment_proof"]) && $
             $_SESSION['error_message'] = "Hanya file JPG, JPEG, PNG & GIF yang diizinkan.";
         } 
         // Upload file
-        else if (move_uploaded_file($_FILES["payment_proof"]["tmp_name"], $target_file)) {
+        else if (@move_uploaded_file($_FILES["payment_proof"]["tmp_name"], $target_file)) {
             // Update database dengan nama file
             $update_query = "UPDATE transactions SET payment_proof = ? WHERE transaction_id = ?";
             $update_stmt = $conn->prepare($update_query);
