@@ -59,10 +59,13 @@ function getRandomRecommendation($userId) {
 
 // Fallback jika API offline
 function getFallbackRecommendation($userId) {
-    // Database connection
-    $conn = new mysqli('localhost', 'root', '', 'hobibekasan');
-    
-    if ($conn->connect_error) {
+    global $conn;
+
+    if (!isset($conn) || $conn->connect_error) {
+        require_once dirname(__DIR__) . '/config/config.php';
+    }
+
+    if (!isset($conn) || $conn->connect_error) {
         return ['success' => false, 'error' => 'Database connection failed'];
     }
     
@@ -79,7 +82,6 @@ function getFallbackRecommendation($userId) {
     $result = $conn->query($query);
     
     if ($result && $row = $result->fetch_assoc()) {
-        $conn->close();
         return [
             'success' => true,
             'product' => $row,
@@ -87,7 +89,6 @@ function getFallbackRecommendation($userId) {
         ];
     }
     
-    $conn->close();
     return ['success' => false, 'error' => 'No products available'];
 }
 
@@ -190,9 +191,13 @@ HTML;
 
 // Log AI analytics
 function logAIAnalytics($userId, $productId, $eventType, $eventData = []) {
-    $conn = new mysqli('localhost', 'root', '', 'hobibekasan');
-    
-    if ($conn->connect_error) {
+    global $conn;
+
+    if (!isset($conn) || $conn->connect_error) {
+        require_once dirname(__DIR__) . '/config/config.php';
+    }
+
+    if (!isset($conn) || $conn->connect_error) {
         return false;
     }
     
@@ -208,12 +213,12 @@ function logAIAnalytics($userId, $productId, $eventType, $eventData = []) {
     ";
     
     $stmt = $conn->prepare($query);
-    $stmt->bind_param('siisi', $eventType, $userId, $productId, $eventDataJson, 1);
-    $result = $stmt->execute();
-    
-    $stmt->close();
-    $conn->close();
-    
-    return $result;
+    if ($stmt) {
+        $stmt->bind_param('siisi', $eventType, $userId, $productId, $eventDataJson, 1);
+        $result = $stmt->execute();
+        $stmt->close();
+        return $result;
+    }
+    return false;
 }
 ?>
