@@ -9,7 +9,7 @@ if (!isset($_SESSION['user'])) {
 }
 
 // Ambil user ID
-$user_id = $_SESSION['user']['id'];
+$user_id = $_SESSION['user']['user_id'] ?? $_SESSION['user']['id'] ?? 0;
 
 // Inisialisasi cart jika belum ada
 if (!isset($_SESSION['cart'])) {

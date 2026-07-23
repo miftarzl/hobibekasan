@@ -67,6 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     // Simpan ke dalam session
                     $_SESSION['user'] = [
                         'user_id' => $user['id'],
+                        'id' => $user['id'],
                         'username' => $user['username'],
                         'email' => $user['email'],
                         'role' => $role

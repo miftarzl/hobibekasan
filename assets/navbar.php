@@ -34,21 +34,23 @@ if (isset($_SESSION['user'])) {
     
     // Ambil data user untuk foto profil
     require_once dirname(__DIR__) . '/config/config.php';
-    $conn = new mysqli($host, $db_user, $db_pass, $database);
     
     // Ambil user ID dengan pengecekan yang aman
-    $user_id = isset($_SESSION['user']['id']) ? $_SESSION['user']['id'] : 0;
+    $user_id = $_SESSION['user']['user_id'] ?? $_SESSION['user']['id'] ?? 0;
     
     // Hanya query jika user ID valid
-    if ($user_id > 0) {
+    if ($user_id > 0 && isset($conn) && $conn instanceof mysqli && !$conn->connect_error) {
         $user_query = "SELECT id, username, email, profile_photo FROM users WHERE id = ?";
         $user_stmt = $conn->prepare($user_query);
-        $user_stmt->bind_param("i", $user_id);
-        $user_stmt->execute();
-        $user_result = $user_stmt->get_result();
-        $current_user = $user_result->fetch_assoc();
-        
-        $_SESSION['current_user'] = $current_user;
+        if ($user_stmt) {
+            $user_stmt->bind_param("i", $user_id);
+            $user_stmt->execute();
+            $user_result = $user_stmt->get_result();
+            $current_user = $user_result->fetch_assoc();
+            
+            $_SESSION['current_user'] = $current_user;
+            $user_stmt->close();
+        }
     }
 }
 
