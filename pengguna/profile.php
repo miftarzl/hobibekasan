@@ -52,55 +52,66 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $address = mysqli_real_escape_string($conn, $_POST['address']);
 
         // Update profile photo if uploaded
-        if (isset($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] == 0) {
-            $allowed = ['jpg', 'jpeg', 'png', 'gif'];
-            $filename = $_FILES['profile_photo']['name'];
-            $file_ext = pathinfo($filename, PATHINFO_EXTENSION);
+        if (isset($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] != UPLOAD_ERR_NO_FILE) {
+            if ($_FILES['profile_photo']['error'] !== UPLOAD_ERR_OK) {
+                $upload_errors = [
+                    UPLOAD_ERR_INI_SIZE   => "Ukuran file melebihi batas upload_max_filesize di php.ini.",
+                    UPLOAD_ERR_FORM_SIZE  => "Ukuran file melebihi MAX_FILE_SIZE formulir.",
+                    UPLOAD_ERR_PARTIAL    => "File hanya terupload sebagian.",
+                    UPLOAD_ERR_NO_TMP_DIR => "Folder sementara (tmp) tidak ditemukan di server.",
+                    UPLOAD_ERR_CANT_WRITE => "Gagal menulis file ke disk server (Permission Error).",
+                    UPLOAD_ERR_EXTENSION  => "Upload dihentikan oleh ekstensi PHP."
+                ];
+                $error_message = $upload_errors[$_FILES['profile_photo']['error']] ?? "Terjadi kesalahan saat mengunggah file (Kode: " . $_FILES['profile_photo']['error'] . ").";
+            } else {
+                $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+                $filename = $_FILES['profile_photo']['name'];
+                $file_ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
 
-            if (in_array(strtolower($file_ext), $allowed)) {
-                $new_filename = uniqid() . '.' . $file_ext;
-                $upload_dir = '../assets/img/profiles/';
+                if (in_array($file_ext, $allowed)) {
+                    $new_filename = uniqid() . '.' . $file_ext;
+                    $upload_dir = '../assets/img/profiles/';
 
-                // Create directory if not exists
-                if (!is_dir($upload_dir)) {
-                    @mkdir($upload_dir, 0777, true);
-                }
-                @chmod($upload_dir, 0777);
-
-                if (@move_uploaded_file($_FILES['profile_photo']['tmp_name'], $upload_dir . $new_filename)) {
-                    // Delete old photo if not default
-                    if (!empty($user['profile_photo']) && file_exists($upload_dir . $user['profile_photo'])) {
-                        @unlink($upload_dir . $user['profile_photo']);
+                    // Create directory if not exists
+                    if (!file_exists($upload_dir)) {
+                        mkdir($upload_dir, 0755, true);
                     }
-                    // Update database with new photo
-                    $update_query = "UPDATE users 
-                    SET username=?, email=?, phone_number=?, address=?, profile_photo=? 
-                    WHERE id=?";
 
-                    $update_stmt = mysqli_prepare($conn, $update_query);
+                    if (move_uploaded_file($_FILES['profile_photo']['tmp_name'], $upload_dir . $new_filename)) {
+                        // Delete old photo if not default
+                        if (!empty($user['profile_photo']) && file_exists($upload_dir . $user['profile_photo'])) {
+                            @unlink($upload_dir . $user['profile_photo']);
+                        }
+                        // Update database with new photo
+                        $update_query = "UPDATE users 
+                        SET username=?, email=?, phone_number=?, address=?, profile_photo=? 
+                        WHERE id=?";
 
-                    mysqli_stmt_bind_param($update_stmt, "sssssi",
-                    $username,
-                    $email,
-                    $phone_number,
-                    $address,
-                    $new_filename,
-                    $user_id
-                    );
-                    if (mysqli_stmt_execute($update_stmt)) {
-                        $success_message = "Profile successfully updated!";
+                        $update_stmt = mysqli_prepare($conn, $update_query);
 
-                        // Refresh user data
-                        $result = mysqli_query($conn, "SELECT * FROM users WHERE id = $user_id");
-                        $user = mysqli_fetch_assoc($result);
+                        mysqli_stmt_bind_param($update_stmt, "sssssi",
+                        $username,
+                        $email,
+                        $phone_number,
+                        $address,
+                        $new_filename,
+                        $user_id
+                        );
+                        if (mysqli_stmt_execute($update_stmt)) {
+                            $success_message = "Profile successfully updated!";
+
+                            // Refresh user data
+                            $result = mysqli_query($conn, "SELECT * FROM users WHERE id = $user_id");
+                            $user = mysqli_fetch_assoc($result);
+                        } else {
+                            $error_message = "Failed to update profile in database. Please try again.";
+                        }
                     } else {
-                        $error_message = "Failed to update profile. Please try again.";
+                        $error_message = "Gagal memindahkan file yang diunggah ke direktori server. Periksa izin folder (permissions).";
                     }
                 } else {
-                    $error_message = "Failed to upload image. Please try again.";
+                    $error_message = "Invalid file type. Only JPG, JPEG, PNG, WEBP and GIF are allowed.";
                 }
-            } else {
-                $error_message = "Invalid file type. Only JPG, JPEG, PNG and GIF are allowed.";
             }
         } else {
             // Update without changing photo
