@@ -72,12 +72,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $new_filename = uniqid() . '.' . $file_ext;
                     $upload_dir = '../assets/img/profiles/';
 
-                    // Create directory if not exists
+                    // Create directory if not exists & set write permissions
                     if (!file_exists($upload_dir)) {
-                        mkdir($upload_dir, 0755, true);
+                        @mkdir($upload_dir, 0777, true);
                     }
+                    @chmod($upload_dir, 0777);
 
-                    if (move_uploaded_file($_FILES['profile_photo']['tmp_name'], $upload_dir . $new_filename)) {
+                    if (@move_uploaded_file($_FILES['profile_photo']['tmp_name'], $upload_dir . $new_filename)) {
                         // Delete old photo if not default
                         if (!empty($user['profile_photo']) && file_exists($upload_dir . $user['profile_photo'])) {
                             @unlink($upload_dir . $user['profile_photo']);
