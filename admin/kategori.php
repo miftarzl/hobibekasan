@@ -13,16 +13,20 @@ require '../config/config.php';
 // Handle adding a category
 if (isset($_POST['add_category'])) {
     $category_name = htmlspecialchars($_POST['category_name']);
-    $category_photo = isset($_FILES['category_photo']) ? $_FILES['category_photo']['name'] : '';
+    $category_photo = '';
     
-    // Upload category photo
-    if ($category_photo) {
-        $target_dir = "../assets/img/category/";
-        if (!is_dir($target_dir)) {
-            @mkdir($target_dir, 0777, true);
+    if (isset($_FILES['category_photo']) && $_FILES['category_photo']['error'] == UPLOAD_ERR_OK) {
+        $ext = strtolower(pathinfo($_FILES['category_photo']['name'], PATHINFO_EXTENSION));
+        $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        if (in_array($ext, $allowed)) {
+            $target_dir = "../assets/img/category/";
+            if (!file_exists($target_dir)) {
+                @mkdir($target_dir, 0777, true);
+            }
+            @chmod($target_dir, 0777);
+            $category_photo = uniqid() . '.' . $ext;
+            @move_uploaded_file($_FILES["category_photo"]["tmp_name"], $target_dir . $category_photo);
         }
-        $target_file = $target_dir . basename($category_photo);
-        @move_uploaded_file($_FILES["category_photo"]["tmp_name"], $target_file);
     }
     
     // Insert dengan semua field yang diperlukan
@@ -45,18 +49,23 @@ if (isset($_GET['delete'])) {
 if (isset($_POST['update_category'])) {
     $id = $_POST['category_id'];
     $category_name = htmlspecialchars($_POST['category_name']);
-    $category_photo = isset($_FILES['category_photo']) ? $_FILES['category_photo']['name'] : '';
     
-    // Upload new category photo if provided
-    if ($category_photo) {
-        $target_dir = "../assets/img/category/";
-        if (!is_dir($target_dir)) {
-            @mkdir($target_dir, 0777, true);
+    if (isset($_FILES['category_photo']) && $_FILES['category_photo']['error'] == UPLOAD_ERR_OK) {
+        $ext = strtolower(pathinfo($_FILES['category_photo']['name'], PATHINFO_EXTENSION));
+        $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        if (in_array($ext, $allowed)) {
+            $target_dir = "../assets/img/category/";
+            if (!file_exists($target_dir)) {
+                @mkdir($target_dir, 0777, true);
+            }
+            @chmod($target_dir, 0777);
+            $category_photo = uniqid() . '.' . $ext;
+            @move_uploaded_file($_FILES["category_photo"]["tmp_name"], $target_dir . $category_photo);
+            
+            $query = "UPDATE categories SET name = '$category_name', category_name = '$category_name', category_photo = '$category_photo' WHERE category_id = $id";
+        } else {
+            $query = "UPDATE categories SET name = '$category_name', category_name = '$category_name' WHERE category_id = $id";
         }
-        $target_file = $target_dir . basename($category_photo);
-        @move_uploaded_file($_FILES["category_photo"]["tmp_name"], $target_file);
-        
-        $query = "UPDATE categories SET name = '$category_name', category_name = '$category_name', category_photo = '$category_photo' WHERE category_id = $id";
     } else {
         $query = "UPDATE categories SET name = '$category_name', category_name = '$category_name' WHERE category_id = $id";
     }
@@ -111,7 +120,9 @@ if (!empty($params)) {
 
 // Handle AJAX requests
 if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
-    ob_clean();
+    if (ob_get_length()) {
+        @ob_clean();
+    }
     header('Content-Type: text/html');
     
     if ($categories->num_rows > 0) {

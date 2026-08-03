@@ -18,16 +18,21 @@ if (isset($_POST['add_product'])) {
     $category_id = $_POST['category_id'];
     $stock = $_POST['stock'];
     $sizes = isset($_POST['sizes']) ? implode(',', $_POST['sizes']) : '';
-    $image = $_FILES['image']['name'];
+    $image = '';
     
     // Upload image
-    if ($image) {
-        $target_dir = "../assets/img/products/";
-        if (!is_dir($target_dir)) {
-            @mkdir($target_dir, 0777, true);
+    if (isset($_FILES['image']) && $_FILES['image']['error'] == UPLOAD_ERR_OK) {
+        $ext = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
+        $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        if (in_array($ext, $allowed)) {
+            $target_dir = "../assets/img/products/";
+            if (!file_exists($target_dir)) {
+                @mkdir($target_dir, 0777, true);
+            }
+            @chmod($target_dir, 0777);
+            $image = uniqid() . '.' . $ext;
+            @move_uploaded_file($_FILES["image"]["tmp_name"], $target_dir . $image);
         }
-        $target_file = $target_dir . basename($image);
-        @move_uploaded_file($_FILES["image"]["tmp_name"], $target_file);
     }
     
     // Query dengan prepared statement untuk mencegah SQL injection
@@ -103,18 +108,26 @@ if (isset($_POST['edit_product'])) {
     $sizes = isset($_POST['sizes']) ? implode(',', $_POST['sizes']) : '';
     
     // Handle image upload if new image is provided
-    if (isset($_FILES['edit_image']) && !empty($_FILES['edit_image']['name'])) {
-        $image = $_FILES['edit_image']['name'];
-        $target_dir = "../assets/img/products/";
-        if (!is_dir($target_dir)) {
-            @mkdir($target_dir, 0777, true);
+    if (isset($_FILES['edit_image']) && $_FILES['edit_image']['error'] == UPLOAD_ERR_OK) {
+        $ext = strtolower(pathinfo($_FILES['edit_image']['name'], PATHINFO_EXTENSION));
+        $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        if (in_array($ext, $allowed)) {
+            $target_dir = "../assets/img/products/";
+            if (!file_exists($target_dir)) {
+                @mkdir($target_dir, 0777, true);
+            }
+            @chmod($target_dir, 0777);
+            $image = uniqid() . '.' . $ext;
+            @move_uploaded_file($_FILES["edit_image"]["tmp_name"], $target_dir . $image);
+            
+            $query = "UPDATE products SET name=?, description=?, price=?, category_id=?, image=?, sizes=? WHERE product_id=?";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("ssdissi", $name, $description, $price, $category_id, $image, $sizes, $product_id);
+        } else {
+            $query = "UPDATE products SET name=?, description=?, price=?, category_id=?, sizes=? WHERE product_id=?";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("ssdisi", $name, $description, $price, $category_id, $sizes, $product_id);
         }
-        $target_file = $target_dir . basename($image);
-        @move_uploaded_file($_FILES["edit_image"]["tmp_name"], $target_file);
-        
-        $query = "UPDATE products SET name=?, description=?, price=?, category_id=?, image=?, sizes=? WHERE product_id=?";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param("ssdissi", $name, $description, $price, $category_id, $image, $sizes, $product_id);
     } else {
         $query = "UPDATE products SET name=?, description=?, price=?, category_id=?, sizes=? WHERE product_id=?";
         $stmt = $conn->prepare($query);

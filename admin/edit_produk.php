@@ -20,18 +20,26 @@ if (isset($_POST['update_product'])) {
     $sizes = isset($_POST['sizes']) ? implode(',', $_POST['sizes']) : '';
     
     // Handle image upload if new image is provided
-    if (isset($_FILES['image']) && !empty($_FILES['image']['name'])) {
-        $image = $_FILES['image']['name'];
-        $target_dir = "../assets/img/products/";
-        if (!is_dir($target_dir)) {
-            @mkdir($target_dir, 0777, true);
+    if (isset($_FILES['image']) && $_FILES['image']['error'] == UPLOAD_ERR_OK) {
+        $ext = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
+        $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        if (in_array($ext, $allowed)) {
+            $target_dir = "../assets/img/products/";
+            if (!file_exists($target_dir)) {
+                @mkdir($target_dir, 0777, true);
+            }
+            @chmod($target_dir, 0777);
+            $image = uniqid() . '.' . $ext;
+            @move_uploaded_file($_FILES["image"]["tmp_name"], $target_dir . $image);
+            
+            $query = "UPDATE products SET name='$name', description='$description', price='$price', 
+                      category_id='$category_id', image='$image', sizes='$sizes' 
+                      WHERE product_id=$product_id";
+        } else {
+            $query = "UPDATE products SET name='$name', description='$description', price='$price', 
+                      category_id='$category_id', sizes='$sizes' 
+                      WHERE product_id=$product_id";
         }
-        $target_file = $target_dir . basename($image);
-        @move_uploaded_file($_FILES["image"]["tmp_name"], $target_file);
-        
-        $query = "UPDATE products SET name='$name', description='$description', price='$price', 
-                  category_id='$category_id', image='$image', sizes='$sizes' 
-                  WHERE product_id=$product_id";
     } else {
         $query = "UPDATE products SET name='$name', description='$description', price='$price', 
                   category_id='$category_id', sizes='$sizes' 
