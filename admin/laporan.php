@@ -608,11 +608,6 @@ $total_revenue = $total_revenue_query->fetch_assoc()['total'] ?? 0;
                             <button type="submit" name="filter" class="btn-filter">
                                 <i class="fas fa-filter"></i> Filter
                             </button>
-                            <?php if (!empty($semuadata)): ?>
-                                <a href="laporan_export.php?start_date=<?php echo urlencode($tgl_mulai); ?>&end_date=<?php echo urlencode($tgl_selesai); ?>&status=<?php echo urlencode($status); ?>" class="btn-export">
-                                    <i class="fas fa-download"></i> Export
-                                </a>
-                            <?php endif; ?>
                         </div>
                     </form>
                 </div>
